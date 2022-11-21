@@ -28,6 +28,8 @@ UserAgent = "Dragalia/174 CFNetwork/1209 Darwin/20.2.0"
 
 # Clone dl-datamine repo to local directory
 scriptDir = os.path.dirname(os.path.realpath(sys.argv[0]))
+if os.path.exists(scriptDir + "/manifest"):
+    os.rename(scriptDir + "/manifest", scriptDir + "/_manifest")
 if not os.path.exists(scriptDir + "/_manifest"):
     ## print("Cloning the dl-datamine repo. This is over 3GB in size.")
     ## Repo.clone_from("https://github.com/CerisWhite/dl-datamine", scriptDir + "/_manifest", depth=1)
