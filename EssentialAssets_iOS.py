@@ -22,12 +22,12 @@ Download_CN = 0
 Download_TW = 0
 
 # The app platform doesn't make much a difference other than iOS not having V1 files. Options are "iOS/" or "Android/". Yes, the trailing slash is necessary.
-App_Platform = "Android/"
-Master_URL = "http://dragalialost.akamaized.net/dl/assetbundles/" + App_Platform
 UserAgent = "Dragalia/174 CFNetwork/1209 Darwin/20.2.0"
 
 # Clone dl-datamine repo to local directory
 scriptDir = os.path.dirname(os.path.realpath(sys.argv[0]))
+if os.path.exists(scriptDir + "/manifest"):
+    os.rename(scriptDir + "/manifest", scriptDir + "/_manifest")
 if not os.path.exists(scriptDir + "/_manifest"):
     ## print("Cloning the dl-datamine repo. This is over 3GB in size.")
     ## Repo.clone_from("https://github.com/CerisWhite/dl-datamine", scriptDir + "/_manifest", depth=1)
@@ -74,10 +74,10 @@ if Download_TW == 1:
     TWManifest_json = {}
     os.makedirs(scriptDir + "/twassets/latest")
 
-manifest_subdirectory = [x for x in sorted(os.listdir(scriptDir + "/_manifest/manifest/"),reverse=True)]
+manifest_subdirectory = [x for x in sorted(os.listdir(scriptDir + "/_manifest/"),reverse=True)]
 manifest_subdirectory_length = len(manifest_subdirectory)
 
-def ManifestParser(current_manifest_json, Manifest_json, assetpath, manifest_date):
+def ManifestParser(Master_URL, current_manifest_json, Manifest_json, assetpath, manifest_date):
     master_assetdata = current_manifest_json['categories'][0]['assets']
     other_assetdata = current_manifest_json['categories'][1]['assets']
     raw_assetdata = current_manifest_json['rawAssets']
@@ -138,12 +138,18 @@ iterator = 0
 while iterator < manifest_subdirectory_length:
     currentName = manifest_subdirectory[iterator]
     manifest_date = currentName[:8]
-    manifest_directory = scriptDir + "/_manifest/manifest/" + currentName
+    manifest_directory = scriptDir + "/_manifest/" + currentName
+    
+    if (currentName == "20221014_b1HyoeTFegeTexC0"):
+        App_Platform = "iOS/"
+    else:
+        App_Platform = "Android/"    
+    Master_URL = "http://dragalialost.akamaized.net/dl/assetbundles/" + App_Platform
     
     JPcurrent_manifest = open(manifest_directory + "/assetbundle.manifest.json", "r")
     JPcurrent_manifest_json = json.load(JPcurrent_manifest)
     assetpath = "/masterassets/"
-    ManifestParser(JPcurrent_manifest_json, JPManifest_json, assetpath, manifest_date)
+    ManifestParser(Master_URL, JPcurrent_manifest_json, JPManifest_json, assetpath, manifest_date)
     
     if Download_EN == 1:
         try:
@@ -153,7 +159,7 @@ while iterator < manifest_subdirectory_length:
             break
         ENcurrent_manifest_json = json.load(ENcurrent_manifest)
         assetpath = "/enassets/"
-        ManifestParser(ENcurrent_manifest_json, ENManifest_json, assetpath, manifest_date)
+        ManifestParser(Master_URL, ENcurrent_manifest_json, ENManifest_json, assetpath, manifest_date)
     if Download_CN == 1:
         try:
             CNcurrent_manifest = open(manifest_directory + "/assetbundle.zh_cn.manifest.json", "r")
@@ -162,7 +168,7 @@ while iterator < manifest_subdirectory_length:
             break
         CNcurrent_manifest_json = json.load(CNcurrent_manifest)
         assetpath = "/cnassets/"
-        ManifestParser(CNcurrent_manifest_json, CNManifest_json, assetpath, manifest_date)
+        ManifestParser(Master_URL, CNcurrent_manifest_json, CNManifest_json, assetpath, manifest_date)
     if Download_TW == 1:
         try:
             TWcurrent_manifest = open(manifest_directory + "/assetbundle.zh_tw.manifest.json", "r")
@@ -171,7 +177,7 @@ while iterator < manifest_subdirectory_length:
             break
         TWcurrent_manifest_json = json.load(TWcurrent_manifest)
         assetpath = "/twassets/"
-        ManifestParser(TWcurrent_manifest_json, TWManifest_json, assetpath, manifest_date)
+        ManifestParser(Master_URL, TWcurrent_manifest_json, TWManifest_json, assetpath, manifest_date)
     print("Manifest " + currentName + " finished.")
     iterator += 1
     
