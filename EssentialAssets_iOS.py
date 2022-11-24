@@ -22,6 +22,7 @@ Download_CN = 0
 Download_TW = 0
 
 # The app platform doesn't make much a difference other than iOS not having V1 files. Options are "iOS/" or "Android/". Yes, the trailing slash is necessary.
+App_Platform = ""
 UserAgent = "Dragalia/174 CFNetwork/1209 Darwin/20.2.0"
 
 # Clone dl-datamine repo to local directory
