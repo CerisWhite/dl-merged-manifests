@@ -39,13 +39,14 @@ if not os.path.exists(scriptDir + "/_manifest"):
     os.rename(scriptDir + "/dl-datamine-master", scriptDir + "/_manifest")
     
 # Define the download function to allow for threading
+session = requests.Session()
 def DownloadData(Manifest_json, manifest_date, assetname, assethash, DownloadURL, DownloadPath):
     tick = 0
     while tick <= 2:
         try:
             if assetname not in Manifest_json:
                 Manifest_json[assetname] = []
-                DataStream = requests.get(DownloadURL, stream=True, headers={"user-agent":UserAgent})
+                DataStream = session.get(DownloadURL, stream=True, headers={"user-agent":UserAgent})
                 DataFile = open(DownloadPath, "wb")
                 for chunk in DataStream.iter_content(chunk_size=8192):
                     DataFile.write(chunk)
