@@ -36,7 +36,7 @@ if not os.path.exists(scriptDir + "/_manifest"):
     zipdata = requests.get("https://github.com/CerisWhite/dl-merged-manifests/archive/refs/heads/master.zip")
     zip2 = zipfile.ZipFile(BytesIO(zipdata.content))
     zip2.extractall(scriptDir + "/./")
-    os.rename(scriptDir + "/dl-datamine-master", scriptDir + "/_manifest")
+    os.rename(scriptDir + "/dl-merged-manifests-master/manifest", scriptDir + "/_manifest")
     
 # Define the download function to allow for threading
 session = requests.Session()
